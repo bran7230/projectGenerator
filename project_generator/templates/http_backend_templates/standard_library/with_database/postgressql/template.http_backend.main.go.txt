@@ -1,0 +1,48 @@
+package main
+
+import (
+	"context"
+	"log/slog"
+	"os"
+	"strings"
+)
+
+func main() {
+
+	// we use ENV for environments
+	// I suggest for production code bases use prod and local use dev
+	// that way the logging servers do not get overflowed with info.
+	logEnv := strings.ToLower(os.Getenv("LOGGING_LEVEL"))
+
+	var loggingLevel slog.Level
+
+	switch logEnv {
+	case "prod":
+		loggingLevel = slog.LevelInfo
+
+	case "dev":
+		loggingLevel = slog.LevelDebug
+
+	default:
+		loggingLevel = slog.LevelInfo
+	}
+
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+		AddSource: true,
+		Level:     loggingLevel,
+	}))
+
+	slog.SetDefault(logger)
+
+	if logEnv == "" {
+		slog.Warn("Logging level not configured in env. Defaulting to error logs.")
+	} else if logEnv != "dev" && logEnv != "prod" {
+		slog.Warn("Unrecognized logging level in env. Defaulting to info logs.", "provided_level", logEnv)
+	}
+
+	// setup routes, db connects, etc
+	if err := run(context.Background(), os.Getenv); err != nil {
+		slog.Error("error during startup.", "error", err)
+		os.Exit(1)
+	}
+}

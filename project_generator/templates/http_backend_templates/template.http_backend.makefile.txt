@@ -1,0 +1,19 @@
+-include .env
+export
+
+# define paths
+BIN_DIR := bin
+
+#links to main.go file.
+CMD_DIR := ./cmd/api
+BINARY_NAME := main
+
+# basic build cmd
+build :
+	@mkdir -p $(BIN_DIR)
+
+	go build -o $(BIN_DIR)/$(BINARY_NAME) $(CMD_DIR)
+
+# calls the build cmd, then runs the program
+run: build
+	./$(BIN_DIR)/$(BINARY_NAME)

@@ -1,0 +1,15 @@
+package main
+
+import (
+	"net/http"
+	"{{ .ProjectName }}/internal/handler"
+)
+
+// setupRoutes takes a service and initializes all the handler routes from: /internal/handler files.
+func setupRoutes() error {
+	mux := http.NewServeMux()
+
+	// this is a basic endpoint that fetches users
+	mux.Handle("GET /users", handler.AllUserFetchHandler())
+	return nil
+}

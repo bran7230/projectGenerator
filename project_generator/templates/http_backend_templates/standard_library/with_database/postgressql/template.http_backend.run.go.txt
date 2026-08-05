@@ -1,0 +1,23 @@
+package main
+
+import (
+	"context"
+	"fmt"
+	"log/slog"
+)
+
+// run acts as our "main" initialization function.
+// it sets up database connections, routes, and gets all the env
+// vars(hence the getEnv func)
+// bubble all build time errors up to this or run time and handle them in main
+// I suggest using slog for these as it's JSON is unmatched
+func run(ctx context.Context, getEnv func(string) string) error {
+	port := getEnv("PORT")
+	fmt.Println(port)
+
+    if err := setupRoutes(); err != nil {
+        slog.Error("error during routes setup.", "error", err)
+        return err
+    }
+	return nil
+}

@@ -1,0 +1,10 @@
+package service
+
+import (
+    "{{ .ProjectName }}/internal/domain"
+)
+
+func UserService(userModel domain.UserModel) error {
+
+	return nil
+}
