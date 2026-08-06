@@ -1,7 +1,6 @@
 package main
 
 import (
-	_ "embed"
 	"errors"
 	"fmt"
 	"projectGenerator/project_generator"
@@ -155,13 +154,17 @@ func main() {
 		Type(spinner.Dots).
 		Title(" Generating project...").
 		Action(func() {
-			time.Sleep(1 * time.Second)
+			// NOTE: the time.Sleep is to prevent the huh framework spinner from bugging out due to it not cycling.
+			// Without that line of code this is appended to the stdout: ^[]11;rgb:1919/1a1a/1c1c^G
+			// I know this is counterintuitive, but it's needed.
+			time.Sleep(500 * time.Millisecond)
+
 			projectDir, generationErr = project_generator.GenerateProject(projectName, selectedProject, selectedDatabase, allowTestCases)
 		}).
 		Run()
 
 	if spinnerErr != nil {
-		fmt.Println("error create spinner.")
+		fmt.Printf("error create spinner. Error: %s\n", spinnerErr)
 		return
 	}
 

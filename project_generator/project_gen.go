@@ -82,7 +82,8 @@ func GenerateProject(projectName, projectType, selectedDatabase string, allowTes
 			filepath.Join(parentDir, "internal"),
 			filepath.Join(parentDir, "internal", "domain"),
 			filepath.Join(parentDir, "internal", "service"),
-			filepath.Join(parentDir, "internal", "handler"))
+			filepath.Join(parentDir, "internal", "handler"),
+		)
 
 		templateFiles = append(templateFiles,
 			templateFile{
@@ -98,36 +99,52 @@ func GenerateProject(projectName, projectType, selectedDatabase string, allowTes
 		switch selectedDatabase {
 
 		case "postgres":
-			postGressTemplate := httpBackStdLibTemplates + "with_database/postgressql/"
+
+			dirPaths = append(dirPaths,
+				filepath.Join(parentDir, "internal", "repository", "postgres"),
+				filepath.Join(parentDir, "internal", "database"),
+			)
+
+			postGres := httpBackStdLibTemplates + "with_database/postgres/"
 
 			templateFiles = append(templateFiles,
 				templateFile{
-					postGressTemplate + "template.http_backend.main.go.txt",
+					postGres + "template.http_backend.main.go.txt",
 					filepath.Join("cmd", "api", "main.go")},
 
 				templateFile{
-					postGressTemplate + "template.http_backend.run.go.txt",
+					postGres + "template.http_backend.run.go.txt",
 					filepath.Join("cmd", "api", "run.go"),
 				},
 
 				templateFile{
-					postGressTemplate + "template.http_backend.setup_routes.go.txt",
+					postGres + "template.http_backend.setup_routes.go.txt",
 					filepath.Join("cmd", "api", "setupRoutes.go"),
 				},
 
 				templateFile{
-					postGressTemplate + "template.http_backend.handler.user.go.txt",
+					postGres + "template.http_backend.handler.user.go.txt",
 					filepath.Join("internal", "handler", "user.go"),
 				},
 
 				templateFile{
-					postGressTemplate + "template.http_backend.service.user.go.txt",
+					postGres + "template.http_backend.service.user.go.txt",
 					filepath.Join("internal", "service", "user.go"),
 				},
 
 				templateFile{
-					postGressTemplate + "template.http_backend.domain.user.go.txt",
+					postGres + "template.http_backend.domain.user.go.txt",
 					filepath.Join("internal", "domain", "user.go"),
+				},
+
+				templateFile{
+					postGres + "template.http_backend.repo.postgres.user.go.txt",
+					filepath.Join("internal", "repository", "postgres", "user.go"),
+				},
+
+				templateFile{
+					postGres + "template.http_backend.database.postgres.go.txt",
+					filepath.Join("internal", "database", "postgres.go"),
 				},
 			)
 
